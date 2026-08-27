@@ -125,7 +125,8 @@ nav.main-nav li.has-children > a::after{ content:"▾"; margin-left:6px; font-si
 .tile.is-active .tile-icon{ color:#fff; }
 .tile.is-active .tile-body h3, .tile.is-active .tile-body p{ color:#fff; }
 .tile.is-active .tile-cta{ display:inline-block; }
-.tile:hover{ text-decoration:none; }
+.tile{ cursor:pointer; }
+.tile:hover{ text-decoration:none; border-color: var(--gold); box-shadow: 0 10px 24px rgba(150,112,15,.14); }
 @media (prefers-reduced-motion: reduce){ .tile{ transition:none; } }
 
 /* ---------- Sekcja intro / cytaty ---------- */

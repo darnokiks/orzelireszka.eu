@@ -45,9 +45,13 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 		function stop() { if (timer) { window.clearInterval(timer); timer = null; } }
 
-		carousel.addEventListener('mouseenter', stop);
+		/* Kafelek reaguje na najechanie myszką / focus klawiaturą - podświetla się
+		   od razu (tak jak aktywny w karuzeli) i wstrzymuje automatyczne obracanie. */
+		tiles.forEach(function (tile, index) {
+			tile.addEventListener('mouseenter', function () { stop(); show(index); });
+			tile.addEventListener('focus', function () { stop(); show(index); });
+		});
 		carousel.addEventListener('mouseleave', start);
-		carousel.addEventListener('focusin', stop);
 		carousel.addEventListener('focusout', start);
 		start();
 	}
