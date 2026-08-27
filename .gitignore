@@ -1,0 +1,6 @@
+# Dane wygenerowane w czasie działania panelu (nie wchodzą do repo - żyją tylko na serwerze).
+/panel/data/*.php
+!/panel/data/index.php
+/assets/img/uploads/*
+!/assets/img/uploads/.gitkeep
+!/assets/img/uploads/.htaccess

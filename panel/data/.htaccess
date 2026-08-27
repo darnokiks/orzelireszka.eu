@@ -1,0 +1,9 @@
+# Blokuje bezpośredni dostęp z przeglądarki do plików z danymi
+# (treść strony, dane logowania, licznik prób logowania).
+Options -Indexes
+Require all denied
+
+<IfModule !mod_authz_core.c>
+	Order deny,allow
+	Deny from all
+</IfModule>

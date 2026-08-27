@@ -1,0 +1,17 @@
+# Katalog na obrazki wgrywane przez panel - wykonywanie kodu jest tu zablokowane,
+# nawet gdyby ktoś podrzucił plik z rozszerzeniem .php.
+Options -Indexes
+<IfModule mod_php7.c>
+	php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+	php_flag engine off
+</IfModule>
+
+<FilesMatch "\.(php|phtml|php\d)$">
+	Require all denied
+	<IfModule !mod_authz_core.c>
+		Order deny,allow
+		Deny from all
+	</IfModule>
+</FilesMatch>

@@ -1,92 +1,103 @@
-# orzelireszka.eu — przywrócona strona (WordPress)
+# orzelireszka.eu — przywrócona strona (rozwiązanie własne, bez WordPressa)
 
-Ten pakiet przywraca stronę Stowarzyszenia Orzeł i Reszka na podstawie
-archiwalnych kopii (Wayback Machine, 2024) w postaci **prawdziwej strony
-WordPress** — dzięki temu treści (strony, wpisy w Aktualnościach, menu, logo)
-dodaje się i edytuje dokładnie tak, jak w WordPressie, bez znajomości kodu.
+Ta strona **celowo nie korzysta z WordPressa ani żadnego gotowego CMS-a**.
+Poprzednia wersja strony (na WordPressie) została zhakowana — dlatego to
+rozwiązanie jest w całości customowe: własny, minimalny kod, zero wtyczek,
+zero gotowego, powszechnie atakowanego oprogramowania. Mimo to treści dodaje
+się bez znajomości kodu, przez zwykły panel w przeglądarce.
 
-## Co jest w paczce
+## Jak to jest zbudowane (i dlaczego jest bezpieczne)
 
-- `wp-content/themes/orzel-i-reszka/` — gotowy motyw WordPress odtwarzający
-  układ i treść oryginalnej strony (menu, strona główna, działalność, kontakt
-  z formularzem, blog „Aktualności”).
-- `content/orzelireszka-content.xml` — plik importu WordPressa (WXR) ze
-  wszystkimi stronami, przykładowym wpisem i gotowym menu głównym.
+- **Strona widoczna dla gości to zwykłe, gotowe pliki `.html`.** Serwer nic
+  nie "oblicza" przy wejściu na stronę — po prostu wysyła gotowy plik. Nie ma
+  bazy danych, nie ma miejsca, w które można by wstrzyknąć złośliwy kod.
+- **Jedyne dwa miejsca, w których w ogóle działa kod PHP:**
+  1. `panel/` — panel do edycji treści, chroniony logowaniem.
+  2. `contact-handler.php` — obsługa formularza kontaktowego.
+  Cała reszta serwisu (to, co widzą goście) to statyczne pliki.
+- **Dane (treść strony, hasło do panelu) są dodatkowo chronione na poziomie
+  kodu**, a nie tylko konfiguracji serwera: pliki w `panel/data/` zaczynają
+  się od linii PHP, która natychmiast przerywa działanie skryptu. Dzięki temu
+  są nie do pobrania z przeglądarki na dowolnym serwerze z PHP — nawet gdyby
+  zawiódł plik `.htaccess` (który dodatkowo też tam jest, jako druga warstwa
+  ochrony).
+- **Panel ma:** hashowane hasła (bcrypt), ochronę przed CSRF, blokadę konta
+  po 5 nieudanych próbach logowania na 15 minut, bezpieczne sesje, oraz
+  walidację wgrywanych obrazków (tylko prawdziwe pliki graficzne, katalog
+  uploadów ma zablokowane wykonywanie kodu).
+- **Formularz kontaktowy** ma pole-pułapkę na boty (honeypot) i limit liczby
+  wiadomości z jednego adresu IP na godzinę.
 
-WordPress (silnik CMS) **nie jest** częścią tego repozytorium — instaluje się
-go osobno na hostingu (patrz krok 1 poniżej), tak jak każdą inną stronę WP.
+## Instalacja na serwerze
 
-## Instalacja krok po kroku
+1. Wgraj całą zawartość tego repozytorium (poza plikami `.git`) na hosting —
+   dokładnie tak, jak jest, do głównego katalogu domeny (`public_html` /
+   `www`, zależnie od hostingu). Wystarczy zwykły hosting z PHP 8.0+ — **nie
+   jest potrzebna żadna baza danych**.
+2. Wejdź w przeglądarce na `https://twojadomena.pl/panel/` — przy pierwszym
+   wejściu strona poprosi o założenie konta administratora (login + hasło,
+   min. 10 znaków). To jednorazowy krok.
+3. Od tej pory logujesz się tam swoim loginem i hasłem, żeby edytować treść.
 
-1. **Zainstaluj WordPressa na serwerze.**
-   Prawie każdy polski hosting (np. home.pl, cyberFolks, OVH, nazwa.pl) ma
-   w panelu klienta opcję „Zainstaluj WordPress” jednym kliknięciem — użyj jej
-   dla domeny orzelireszka.eu. Zapisz dane logowania do `wp-admin`.
+Strona główna (`index.html`) i pozostałe podstrony już działają od razu po
+wgraniu — zawierają treści odtworzone z archiwum. Panel służy tylko do ich
+edycji w przyszłości.
 
-2. **Wgraj motyw.**
-   Spakuj folder `wp-content/themes/orzel-i-reszka` do pliku `.zip`, a
-   następnie w panelu: **Wygląd → Motywy → Dodaj nowy → Wgraj motyw** i wskaż
-   ten plik zip. Możesz też wgrać folder bezpośrednio przez FTP/File Manager
-   do `wp-content/themes/` na serwerze. Na koniec kliknij **Aktywuj**.
+## Jak dodawać/edytować treści
 
-3. **Zaimportuj treść startową.**
-   Wejdź w **Narzędzia → Importuj**. Jeśli WordPress poprosi o instalację
-   „Importera WordPress” — zainstaluj i uruchom. Wgraj plik
-   `content/orzelireszka-content.xml`. Gdy zapyta o autora — przypisz do
-   swojego konta administratora. Kliknij **Importuj**.
+Wejdź na `/panel/` i zaloguj się. Z menu po lewej wybierz sekcję:
 
-4. **Odśwież panel administracyjny.**
-   Po imporcie wejdź jeszcze raz na dowolną stronę w `wp-admin` (np. Kokpit).
-   Motyw sam ustawi wtedy: stronę główną, stronę „Aktualności” jako blog oraz
-   menu główne. Możesz to zweryfikować w **Ustawienia → Czytanie** oraz
-   **Wygląd → Menu**.
+- **Strona Główna** — nagłówek, opis i 5 obracających się kafelków.
+- **Działalność Stowarzyszenia** — opisy inicjatyw (Przedsiębiorstwo
+  Społeczne, Ogrody Społeczne, Rozgłośnik Społeczny).
+- **O Stowarzyszeniu / Realizacje / Oferta** — proste strony tekstowe.
+- **Kontakt** — adres, telefon, e-mail, KRS/NIP/REGON (na ten e-mail trafiają
+  wiadomości z formularza).
+- **Aktualności** — dodawanie/edycja/usuwanie wpisów (tytuł, data, opis,
+  treść, zdjęcie).
+- **Ustawienia** — nazwa strony, logo, zmiana hasła.
 
-5. **Wgraj prawdziwe logo i zdjęcia.**
-   Archiwum internetowe nie zapisało plików graficznych oryginalnej strony
-   (loga, zdjęć) — tylko tekst. Dodaj logo w **Personalizacja → Logo strony**,
-   a zdjęcia w treści stron (edytor blokowy → blok „Obraz”) — dokładnie tak,
-   jak w zwykłym WordPressie.
+Po kliknięciu **Zapisz** panel od razu generuje na nowo odpowiednie pliki
+`.html` — zmiana jest widoczna na stronie natychmiast, bez czekania.
 
-6. **Uzupełnij treści oznaczone „✏️”.**
-   Kilka fragmentów nie zostało zarchiwizowanych (patrz sekcja niżej) i w ich
-   miejscu jest widoczna żółta notatka z podpowiedzią, co i gdzie uzupełnić.
-   Usuń notatkę i wpisz docelowy tekst w edytorze danej strony.
-
-## Jak dodawać treści (jak w WordPressie)
-
-- **Nowa aktualność:** `Wpisy → Dodaj nowy`.
-- **Edycja dowolnej strony** (np. „O Stowarzyszeniu”, „Oferta”): `Strony →
-  [nazwa strony] → Edytuj`, edytor blokowy jak w standardowym WordPressie.
-- **Zmiana menu:** `Wygląd → Menu`.
-- **Zmiana loga / kolorów nagłówka:** `Wygląd → Personalizacja`.
-- **Wiadomości z formularza kontaktowego** trafiają na adres e-mail
-  administratora ustawiony w `Ustawienia → Ogólne`. Jeśli maile z formularza
-  nie dochodzą (częsty problem hostingów z funkcją PHP `mail()`), zainstaluj
-  bezpłatną wtyczkę **WP Mail SMTP** i skonfiguruj wysyłkę przez SMTP/Gmail.
+Osobne akapity w polach tekstowych oddzielaj **pustą linią** — każdy taki
+fragment stanie się osobnym akapitem na stronie.
 
 ## Czego nie udało się odzyskać z archiwum
 
-Archiwalna kopia strony była zapisywana przez przeglądarkę i nie zawierała
-wszystkich elementów renderowanych dynamicznie przez JavaScript ani plików
-graficznych. Do uzupełnienia pozostały:
+Poprzednia strona (WordPress + Elementor) ładowała część treści dynamicznie
+przez JavaScript, więc archiwalna kopia jej nie zapisała. W panelu, w
+miejscach, gdzie brakuje oryginalnej treści, zobaczysz żółtą notatkę
+zaczynającą się od „✏️” z podpowiedzią, co uzupełnić:
 
-- Logo i zdjęcia (żadne pliki graficzne nie zachowały się w kopii).
-- Pełna treść zakładek „Przedsiębiorstwo Społeczne” i „Ogrody Społeczne” na
-  stronie *Działalność Stowarzyszenia* (ładowały się dynamicznie, nie zostały
-  zapisane w archiwum) — zachowana została wyłącznie treść zakładki
-  „Rozgłośnik Społeczny”.
-- Pełna treść podstron *O Stowarzyszeniu Orzeł i Reszka*, *Realizacje Projekty
-  Zadania* oraz *Oferta* — w archiwum widoczne były tylko tytuły/zajawki.
-- Historyczne wpisy z „Aktualności” — lista wpisów ładowała się dynamicznie i
-  nie została zapisana w żadnej z dostarczonych kopii archiwalnych.
+- Pełna treść zakładek „Przedsiębiorstwo Społeczne” i „Ogrody Społeczne”
+  (zachowała się tylko treść „Rozgłośnik Społeczny”).
+- Pełna treść podstron „O Stowarzyszeniu”, „Realizacje Projekty Zadania” i
+  „Oferta” (w archiwum widoczne były tylko tytuły/zajawki).
+- Historyczne wpisy z „Aktualności” (lista ładowała się dynamicznie i nie
+  zapisała się w żadnej z dostarczonych kopii archiwalnych). Nowe wpisy
+  dodajesz w panelu w sekcji Aktualności.
 
-Adresy podstron (np. `/kontakt/`, `/dzialania-stowarzyszenie/`,
-`/o-stowarzyszeniu/`) zostały zachowane takie same jak w oryginalnej stronie.
+**Logo zostało odzyskane** — jest to oryginalny plik wyodrębniony z
+przesłanego PDF-a archiwalnej strony (`assets/img/logo.png`). Jeśli masz
+lepszej jakości plik źródłowy, możesz go podmienić w panelu: Ustawienia →
+Logo.
 
-## Dane, które zostały odtworzone 1:1 z archiwum
+## Dane odtworzone 1:1 z archiwum
 
-- Pełne menu główne (wraz z rozwijanymi podmenu).
+- Pełne menu główne (z rozwijanymi podmenu) i jego kolejność.
 - Dane kontaktowe: adres, godziny pracy, telefon, e-mail, KRS/NIP/REGON.
 - Formularz kontaktowy z tymi samymi polami (Imię, E-mail, Wiadomość).
-- Treść strony głównej (wstęp, zajawki, 5 kafelków z linkami).
+- Treść i układ strony głównej (wstęp + 5 kafelków z linkami, tak jak w
+  oryginale), łącznie z automatycznym obracaniem kafelków.
 - Treść zakładki „Rozgłośnik Społeczny”.
+- Adresy podstron (np. `/kontakt.html`, `/dzialalnosc-stowarzyszenia.html`)
+  nawiązują do oryginalnych slugów.
+
+## Uwaga dot. wysyłki e-maili z formularza
+
+Formularz kontaktowy wysyła wiadomości funkcją PHP `mail()`. Na większości
+hostingów to działa od razu, ale jeśli e-maile nie dochodzą (część hostingów
+tego wymaga), skontaktuj się z pomocą techniczną hostingu w sprawie
+konfiguracji wysyłki poczty (SPF/wysyłka z domeny) — kod formularza nie
+wymaga wtedy żadnych zmian.
