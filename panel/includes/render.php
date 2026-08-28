@@ -91,6 +91,14 @@ function oir_page_shell(array $content, string $base, string $activeUrl, string 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{$title}</title>
 <meta name="description" content="{$description}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{$title}">
+<meta property="og:description" content="{$description}">
+<meta property="og:image" content="{$base}assets/img/favicon-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" sizes="32x32" href="{$base}assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="{$base}assets/img/favicon-192.png">
+<link rel="apple-touch-icon" href="{$base}assets/img/favicon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap">
@@ -243,9 +251,19 @@ function oir_render_post(array $content, array $post, string $base = '../'): str
 	return oir_page_shell($content, $base, 'aktualnosci.html', $post['title'] . ' - ' . $content['site']['name'], $post['excerpt'], $body);
 }
 
+function oir_render_404(array $content): string {
+	$body = '<div class="container narrow page-content" style="text-align:center;">'
+		. '<h1>Nie znaleziono strony</h1>'
+		. '<p>Strona, której szukasz, nie istnieje albo została przeniesiona.</p>'
+		. '<p><a class="btn" href="index.html">Wróć na stronę główną</a></p>'
+		. '</div>';
+	return oir_page_shell($content, '', '', 'Nie znaleziono strony - ' . $content['site']['name'], 'Strona nie została znaleziona.', $body);
+}
+
 /** Generuje wszystkie pliki .html strony publicznej na podstawie treści z panelu. */
 function oir_generate_all(array $content, string $publicRoot): void {
 	file_put_contents($publicRoot . '/index.html', oir_render_home($content));
+	file_put_contents($publicRoot . '/404.html', oir_render_404($content));
 	file_put_contents($publicRoot . '/kontakt.html', oir_render_kontakt($content));
 	file_put_contents($publicRoot . '/dzialalnosc-stowarzyszenia.html', oir_render_dzialalnosc($content));
 	file_put_contents($publicRoot . '/o-stowarzyszeniu.html', oir_render_simple_page($content, '', 'o-stowarzyszeniu.html', 'O Stowarzyszeniu Orzeł i Reszka', $content['o_stowarzyszeniu']['body'], 'O Stowarzyszeniu Orzeł i Reszka - ' . $content['site']['name']));
