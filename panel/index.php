@@ -48,48 +48,74 @@ function admin_shell(string $title, string $active, string $body, string $flash 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{$title} - Panel Orzeł i Reszka</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600&display=swap">
 <style>
-	:root{ --gold:#c9971e; --ink:#2f2a22; --line:#e6e0d2; --bg:#f7f4ec; }
+	:root{
+		--gold:#c9971e; --gold-deep:#96700f; --ink:#2f2a22; --body-text:#59544a;
+		--line:#e6e0d2; --bg:#f7f4ec; --radius:10px;
+	}
 	*{box-sizing:border-box;}
-	body{ margin:0; font-family: -apple-system, Segoe UI, Arial, sans-serif; background: var(--bg); color: var(--ink); }
+	body{ margin:0; font-family:'Open Sans','Segoe UI',Arial,sans-serif; background: var(--bg); color: var(--ink); }
+	h1,h2,h3,legend{ font-family:'Montserrat','Segoe UI',Arial,sans-serif; }
 	.layout{ display:flex; min-height:100vh; }
-	.sidebar{ width:230px; flex:none; background:#fff; border-right:1px solid var(--line); padding:20px 0; }
-	.sidebar h1{ font-size:1rem; padding:0 20px 16px; margin:0; border-bottom:1px solid var(--line); }
-	.sidebar a{ display:block; padding:10px 20px; color:var(--ink); text-decoration:none; font-size:.92rem; }
-	.sidebar a:hover{ background: var(--bg); }
-	.sidebar a.active{ background: var(--gold); color:#fff; font-weight:600; }
-	.sidebar .logout{ margin-top:20px; border-top:1px solid var(--line); padding-top:14px; color:#a33; }
-	.content{ flex:1; padding: 30px 40px; max-width:820px; }
-	h2{ margin-top:0; }
+	.sidebar{
+		width:240px; flex:none; background:#fff; border-right:1px solid var(--line); padding:0 0 20px;
+		display:flex; flex-direction:column; position:sticky; top:0; align-self:flex-start; height:100vh; overflow-y:auto;
+	}
+	.sidebar-brand{ display:flex; align-items:center; gap:10px; padding:20px; border-bottom:1px solid var(--line); }
+	.sidebar-brand img{ height:34px; width:auto; }
+	.sidebar-brand span{ font-family:'Montserrat',sans-serif; font-weight:700; font-size:.85rem; line-height:1.25; color:var(--ink); }
+	.sidebar nav{ padding:10px 0; flex:1; }
+	.sidebar a{ display:block; margin:2px 10px; padding:10px 14px; border-radius:8px; color:var(--ink); text-decoration:none; font-size:.92rem; font-weight:600; }
+	.sidebar a:hover{ background: var(--bg); text-decoration:none; }
+	.sidebar a.active{ background: var(--gold); color:#fff; box-shadow:0 6px 14px rgba(150,112,15,.25); }
+	.sidebar .logout{ margin:10px 20px 0; padding-top:14px; border-top:1px solid var(--line); color:#a33; font-weight:600; text-decoration:none; font-size:.88rem; }
+	.sidebar .logout:hover{ text-decoration:underline; }
+	.content{ flex:1; padding: 36px 44px; max-width:860px; }
+	h2{ margin-top:0; font-weight:700; }
 	label{ display:block; font-weight:600; margin: 18px 0 6px; font-size:.9rem; }
 	input[type=text], input[type=email], input[type=password], input[type=date], input[type=url], textarea, select{
-		width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font: inherit;
+		width:100%; padding:11px 14px; border:1px solid var(--line); border-radius:8px; font: inherit; background:#fff;
+		transition: border-color .15s ease, box-shadow .15s ease;
 	}
+	input:focus, textarea:focus, select:focus{ outline:none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,151,30,.18); }
 	textarea{ min-height:160px; font-family: inherit; }
 	.hint{ color:#8a8271; font-size:.82rem; margin-top:4px; }
-	button, .button{ background: var(--gold); color:#fff; border:none; padding:11px 22px; border-radius:6px; font-weight:600; cursor:pointer; font-size:.92rem; text-decoration:none; display:inline-block; }
-	button:hover, .button:hover{ opacity:.9; }
-	button.danger{ background:#a33; }
-	.flash{ padding:12px 16px; border-radius:6px; margin-bottom:18px; }
+	button, .button{
+		background: var(--gold); color:#fff; border:none; padding:11px 24px; border-radius:8px; font-weight:700;
+		cursor:pointer; font-size:.92rem; text-decoration:none; display:inline-block;
+		transition: transform .12s ease, background .15s ease, box-shadow .15s ease;
+	}
+	button:hover, .button:hover{ background: var(--gold-deep); transform:translateY(-1px); box-shadow:0 8px 16px rgba(150,112,15,.25); }
+	button.danger{ background:#b23b2f; }
+	button.danger:hover{ background:#96291f; box-shadow:0 8px 16px rgba(150,40,30,.25); }
+	.flash{ padding:13px 16px; border-radius:8px; margin-bottom:20px; font-weight:600; font-size:.92rem; }
 	.flash.success{ background:#e8f3e6; color:#33552f; }
 	.flash.error{ background:#fbe7e5; color:#7a2b23; }
-	table{ width:100%; border-collapse:collapse; margin-top:16px; }
-	td, th{ text-align:left; padding:10px; border-bottom:1px solid var(--line); font-size:.9rem; }
+	table{ width:100%; border-collapse:collapse; margin-top:16px; background:#fff; border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); }
+	td, th{ text-align:left; padding:12px 14px; border-bottom:1px solid var(--line); font-size:.9rem; }
+	th{ background:var(--bg); font-family:'Montserrat',sans-serif; font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--body-text); }
+	tr:last-child td{ border-bottom:none; }
 	.row{ display:flex; gap:20px; }
 	.row > div{ flex:1; }
-	fieldset{ border:1px solid var(--line); border-radius:8px; margin: 18px 0; padding: 14px 16px; }
-	fieldset legend{ font-weight:700; padding:0 6px; }
-	.current-image{ max-width:200px; border-radius:6px; margin-top:8px; border:1px solid var(--line); }
-	.login-wrap{ max-width:360px; margin:80px auto; background:#fff; padding:32px; border-radius:10px; border:1px solid var(--line); }
+	fieldset{ border:1px solid var(--line); border-radius:var(--radius); margin: 18px 0; padding: 16px 18px; background:#fff; }
+	fieldset legend{ font-weight:700; padding:0 8px; color:var(--gold-deep); }
+	.current-image{ max-width:200px; border-radius:8px; margin-top:8px; border:1px solid var(--line); }
+	.login-wrap{ max-width:380px; margin:64px auto 0; background:#fff; padding:36px; border-radius:14px; border:1px solid var(--line); box-shadow:0 20px 45px rgba(40,30,10,.08); }
+	.login-logo{ display:block; height:46px; width:auto; margin:0 auto 26px; }
+	.auth-page{ min-height:100vh; background:var(--bg); }
 </style>
 </head>
 <body>
 HTML;
 
 	if ($active === '__auth__') {
-		echo $body;
+		echo '<div class="auth-page">' . $body . '</div>';
 	} else {
-		echo '<div class="layout"><div class="sidebar"><h1>Panel Orzeł i Reszka</h1>' . $navHtml . '<a class="logout" href="logout.php">Wyloguj się</a></div><div class="content">' . $flashHtml . $body . '</div></div>';
+		echo '<div class="layout"><div class="sidebar"><div class="sidebar-brand"><img src="../assets/img/logo.png" alt=""><span>Panel<br>Orzeł i Reszka</span></div><nav>' . $navHtml . '</nav><a class="logout" href="logout.php">Wyloguj się</a></div><div class="content">' . $flashHtml . $body . '</div></div>';
 	}
 	echo '</body></html>';
 }
@@ -122,6 +148,7 @@ if (!oir_has_account()) {
 	$csrf = oir_csrf_field();
 	admin_shell('Konfiguracja', '__auth__', <<<HTML
 <div class="login-wrap">
+	<img class="login-logo" src="../assets/img/logo.png" alt="Stowarzyszenie Orzeł i Reszka">
 	<h2>Utwórz konto administratora</h2>
 	<p class="hint">To jednorazowy krok - dane logowania do panelu treści Twojej strony. Zapisz je w bezpiecznym miejscu.</p>
 	{$errHtml}
@@ -167,6 +194,7 @@ if (!oir_is_logged_in()) {
 	$csrf = oir_csrf_field();
 	admin_shell('Logowanie', '__auth__', <<<HTML
 <div class="login-wrap">
+	<img class="login-logo" src="../assets/img/logo.png" alt="Stowarzyszenie Orzeł i Reszka">
 	<h2>Logowanie do panelu</h2>
 	{$errHtml}
 	<form method="post">
