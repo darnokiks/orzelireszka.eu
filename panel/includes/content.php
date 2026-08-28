@@ -56,7 +56,24 @@ function oir_default_content(): array {
 		'oferta' => array(
 			'body' => "Dom Kreatywny i Podwórko Sztuki\n\nDom Kreatywny działający przy ul. Niedziałkowskiego 33 w Radomiu to międzypokoleniowy społeczny dom kultury, otwarty 17 listopada 2018 roku z udziałem prof. Romualda Kołodzieja oraz Stowarzyszenia Orzeł i Reszka.\n\nZapraszamy do niego artystów i mieszkańców wszystkich pokoleń na zajęcia i warsztaty. To prawdziwa kuźnia sztuki i twórczości - organizujemy tu wystawy i wernisaże, a w naszej galerii sztuki można kupić piękne witraże, ikony i obrazy.\n\nDrzwi Domu Kreatywnego są otwarte nie tylko na sztukę - to miejsce spotkań, warsztatów i wspólnego działania dla mieszkańców Radomia w każdym wieku.\n\n[Fragment odtworzony na podstawie informacji publicznych (radioplus.com.pl) - uzupełnij tutaj, w panelu, aktualny grafik zajęć i wydarzeń.]",
 		),
-		'aktualnosci' => array(),
+		'aktualnosci' => array(
+			array(
+				'slug'    => 'otwarcie-domu-kreatywnego-i-podworka-sztuki',
+				'title'   => 'Otwarcie Domu Kreatywnego i Podwórka Sztuki',
+				'date'    => '2018-11-17',
+				'excerpt' => '17 listopada 2018 r. przy ul. Niedziałkowskiego 33 w Radomiu otworzyliśmy Dom Kreatywny i Podwórko Sztuki.',
+				'image'   => '',
+				'body'    => "17 listopada 2018 roku, z udziałem prof. Romualda Kołodzieja, otworzyliśmy Dom Kreatywny i Podwórko Sztuki przy ul. Niedziałkowskiego 33 w Radomiu.\n\nTo międzypokoleniowy społeczny dom kultury - zapraszamy do niego artystów i mieszkańców wszystkich pokoleń na zajęcia i warsztaty. Organizujemy tu wystawy i wernisaże, a w naszej galerii sztuki można kupić witraże, ikony i obrazy.\n\n[Wpis odtworzony na podstawie informacji publicznych (radioplus.com.pl) - dodaj więcej zdjęć i szczegółów z tego wydarzenia w panelu.]",
+			),
+			array(
+				'slug'    => 'rusza-portal-radomskie-org',
+				'title'   => 'Rusza portal radomskie.org',
+				'date'    => '2020',
+				'excerpt' => 'W 2020 roku uruchomiliśmy radomskie.org - portal o potencjale turystycznym regionu radomskiego.',
+				'image'   => '',
+				'body'    => "W 2020 roku, w ramach projektu „Turystyka Lokalna i Społeczna”, uruchomiliśmy autorski portal internetowy radomskie.org.\n\nPortal gromadzi i prezentuje informacje o potencjale turystycznym regionu radomskiego - o istniejących zasobach oraz walorach przyrodniczych i antropogenicznych (stworzonych przez człowieka) subregionu radomskiego.\n\n[Wpis odtworzony na podstawie informacji publicznych - dokładna dzienna data uruchomienia portalu nie jest znana; uzupełnij lub popraw ją w panelu.]",
+			),
+		),
 	);
 }
 
